@@ -21,7 +21,6 @@
 ![Issues](https://img.shields.io/github/issues/JAIMEENCHAUHAN/PRISM-AI?style=for-the-badge&color=orange)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-
 </div>
 
 ---
@@ -30,24 +29,65 @@
 
 <img align="right" width="260" src="https://user-images.githubusercontent.com/74038190/213910845-af37a709-8995-40d6-be59-724526e3c3d7.gif">
 
-PRISM AI is an AI-powered GitHub Pull Request Review platform that combines Retrieval-Augmented Generation (RAG), Semgrep static analysis, Pinecone vector search, and Groq LLMs to generate intelligent, context-aware code reviews, helping developers improve code quality, security, and maintainability through automated review suggestions and real-time analytics.
+PRISM AI is an AI-powered GitHub Pull Request Review platform that combines Retrieval-Augmented Generation (RAG), Semgrep static analysis, Pinecone vector search, and Groq LLMs to generate intelligent, context-aware code reviews.
+
+It helps developers improve code quality, security, and maintainability by automatically analyzing pull requests, retrieving repository context, generating structured review feedback, and presenting review insights through an analytics dashboard.
 
 ### ✨ Key Features
 
-- ✅ **Automated PR Reviews** — Posted directly to GitHub pull requests
-- 🔍 **Semgrep Static Analysis** — Security and maintainability checks
-- 🧠 **RAG (Retrieval-Augmented Generation)** — Context-aware reviews using Pinecone
-- 📈 **Online Learning** — Optimizes prompts based on review quality
-- 📊 **Analytics Dashboard** — Real-time visualization of review metrics
+- ✅ **Automated PR Reviews** — Posts review feedback directly to GitHub pull requests
+- 🔍 **Semgrep Static Analysis** — Performs security and maintainability checks
+- 🧠 **RAG (Retrieval-Augmented Generation)** — Uses repository context for context-aware reviews
+- 📈 **Online Learning** — Optimizes prompt selection based on review quality
+- 📊 **Analytics Dashboard** — Visualizes review results and evaluation metrics
+- 🔗 **GitHub Integration** — Fetches pull request data and posts generated feedback through GitHub APIs
+- 🧩 **Modular Processing Pipeline** — Separates analysis, retrieval, generation, evaluation, and logging into distinct stages
 
 <br clear="right"/>
 
 ---
 
+## 🔄 End-to-End Review Flow
+
+```text
+GitHub Pull Request
+        │
+        ▼
+   PR Data Fetch
+        │
+        ▼
+ Semgrep Static Analysis
+        │
+        ▼
+ Repository Context Retrieval
+        │
+        ▼
+  Feature Extraction
+        │
+        ▼
+   Prompt Selection
+        │
+        ▼
+   LLM Review Generation
+        │
+        ▼
+ Evaluation & Scoring
+        │
+        ▼
+ GitHub Review Comment
+        │
+        ▼
+ Analytics Dashboard
+```
+
+---
+
 ## 🏗️ Architecture
 
+### Review Processing Pipeline
+
 ```mermaid
-%%{init: {'theme':'dark', 'themeVariables': { 'primaryColor': '#6C63FF','primaryTextColor':'#fff','lineColor':'#6C63FF'}}}%%
+%%{init: {'theme':'dark', 'themeVariables': {'primaryColor':'#6C63FF','primaryTextColor':'#fff','lineColor':'#6C63FF'}}}%%
 flowchart TD
     A[🔽 GitHub PR] --> B[📥 Fetch Metadata]
     B --> C[🔍 Semgrep Analysis]
@@ -56,23 +96,105 @@ flowchart TD
     E --> F[🎯 Prompt Selection]
     F --> G[✍️ Review Generation]
     G --> H[📊 Evaluation & Scoring]
-    H --> I[💾 Result Logging & GitHub Comment]
+    H --> I[💾 Result Logging]
+    I --> J[💬 GitHub Comment]
 
     style A fill:#6C63FF,color:#fff,stroke:#333,stroke-width:2px
-    style I fill:#00B894,color:#fff,stroke:#333,stroke-width:2px
+    style J fill:#00B894,color:#fff,stroke:#333,stroke-width:2px
+```
+
+### System Architecture
+
+```mermaid
+%%{init: {'theme':'dark'}}%%
+flowchart TD
+    A[👨‍💻 Developer] --> B[🐙 GitHub Pull Request]
+    B --> C[⚡ FastAPI Backend]
+
+    C --> D[🔍 Semgrep]
+    C --> E[🧠 Pinecone RAG]
+    C --> F[🤖 Groq LLM]
+    C --> G[🎯 Online Learning]
+
+    D --> H[📝 Review Generation]
+    E --> H
+    F --> H
+    G --> H
+
+    H --> I[📊 Evaluation]
+    I --> J[💬 GitHub PR Comment]
+
+    C --> K[📈 Next.js Dashboard]
+    J --> K
 ```
 
 ### System Components
 
 1. **PR Pulling** — Fetch metadata and diffs from GitHub
 2. **Semgrep Static Analysis** — Run security and maintainability checks
-3. **RAG Retrieval** — Retrieve repository context from Pinecone index
-4. **Feature Extraction** — Compute structural features from PR diff
-5. **Prompt Selection** — Online learning model selects best-performing prompt
-6. **Review Generation** — LLM produces structured review
-7. **Evaluation System** — Combines heuristic metrics for quality scoring
-8. **Result Logging** — Saves structured JSON and markdown files
-9. **GitHub Integration** — Posts final review as PR comment
+3. **RAG Retrieval** — Retrieve repository context from the Pinecone index
+4. **Feature Extraction** — Compute structural features from the PR diff
+5. **Prompt Selection** — Online learning model selects the best-performing prompt
+6. **Review Generation** — LLM produces structured review feedback
+7. **Evaluation System** — Combines heuristic metrics for review-quality scoring
+8. **Result Logging** — Saves structured JSON and markdown results
+9. **GitHub Integration** — Posts the final review as a PR comment
+10. **Analytics Dashboard** — Displays review results and analytics
+
+---
+
+## ⚡ Scalability & Reliability
+
+PRISM AI is organized as a modular processing pipeline so individual stages can be developed, tested, and improved independently.
+
+### Key Engineering Considerations
+
+- **Modular Pipeline** — Each processing stage has a defined responsibility.
+- **API-based Architecture** — Backend functionality is exposed through FastAPI.
+- **External Service Integration** — GitHub, Pinecone, Groq, and Semgrep are integrated as independent components.
+- **Repository Context Retrieval** — RAG retrieves relevant repository information to support review generation.
+- **Large PR Handling** — Static analysis, retrieval, feature extraction, and generation are separated into individual processing stages.
+- **Result Logging** — Structured review results are logged for evaluation and analytics.
+- **Independent Frontend and Backend** — The Next.js dashboard and FastAPI backend are separated for independent development and deployment.
+
+---
+
+## 🧠 Engineering Approach
+
+PRISM AI combines deterministic software analysis with AI-based reasoning.
+
+```text
+Deterministic Analysis
+        │
+        ▼
+     Semgrep
+        │
+        ├──────────────┐
+        │              │
+        ▼              ▼
+ Static Findings   Repository Context
+        │              │
+        └───────┬──────┘
+                ▼
+               RAG
+                │
+                ▼
+             Groq LLM
+                │
+                ▼
+        Structured Review
+                │
+                ▼
+          Evaluation
+```
+
+### Why this approach?
+
+- **Semgrep** provides deterministic static-analysis findings.
+- **RAG** provides repository-specific context.
+- **LLM generation** converts analysis and context into developer-friendly feedback.
+- **Evaluation** provides signals for the online learning component.
+- **Modular stages** make individual components easier to test and improve.
 
 ---
 
@@ -101,6 +223,12 @@ cd PRISM-AI
 pip install -r requirement.txt
 ```
 
+> If the dependency file in the repository is named `requirements.txt`, use:
+>
+> ```bash
+> pip install -r requirements.txt
+> ```
+
 #### 3. Configure Environment Variables
 
 Create a `.env` file in the root directory:
@@ -120,7 +248,7 @@ PINECONE_INDEX_NAME=prism-ai-rag
 python main.py
 ```
 
-#### 5. Run the Dashboard (Optional)
+#### 5. Run the Dashboard
 
 ```bash
 cd dashboard
@@ -129,14 +257,20 @@ npm run dev:server
 npm run dev:client
 ```
 
-The dashboard will be available at `http://localhost:3000`
+The dashboard will be available at:
+
+```text
+http://localhost:3000
+```
 
 ---
 
 ## 🛠️ Technology Stack
 
 <div align="center">
+
 <img src="https://skillicons.dev/icons?i=python,fastapi,nextjs,tailwind,vercel,github&theme=dark" />
+
 </div>
 
 <br/>
@@ -152,20 +286,23 @@ The dashboard will be available at `http://localhost:3000`
 </div>
 
 ### Backend
+
 - **Python** — Core application logic
 - **FastAPI** — API framework
-- **GitHub REST API** — PR data fetching
-- **Groq** — Cloud-hosted LLMs
+- **GitHub REST API** — Pull request data and GitHub integration
+- **Groq** — Cloud-hosted LLM inference
 - **Pinecone** — Vector database for RAG
 - **Semgrep** — Static code analysis
 
 ### Machine Learning
+
 - **RAG** — Retrieval-Augmented Generation
 - **Embedding Models** — Semantic code understanding
 - **SGDRegressor** — Online learning for prompt optimization
 - **Heuristic Evaluation** — Review quality scoring
 
 ### Frontend
+
 - **Next.js 14** — React framework
 - **TailwindCSS** — Styling
 - **ShadCN** — UI components
@@ -175,44 +312,129 @@ The dashboard will be available at `http://localhost:3000`
 
 ## 🧪 Testing Strategy
 
-PRISM AI implements comprehensive testing at multiple levels:
+PRISM AI implements testing at multiple levels to validate individual components and the complete review workflow.
 
 ### Test Coverage
 
-- **Unit Testing** — Feature extraction, prompt selection, evaluation scoring
-- **Integration Testing** — Full PR-to-review pipeline
-- **Static Testing** — Semgrep rule validation
-- **Black-Box Testing** — Randomized diffs and multi-language tests
-- **Performance Testing** — Load and spike testing for large PRs
-- **GUI Testing** — Dashboard component and page-level testing
+| Testing Level | What is Tested |
+|---|---|
+| **Unit Testing** | Feature extraction, prompt selection, evaluation scoring |
+| **Integration Testing** | Full PR-to-review pipeline |
+| **Static Testing** | Semgrep rule validation |
+| **Black-Box Testing** | Randomized diffs and multi-language tests |
+| **Performance Testing** | Load and spike testing for large PRs |
+| **GUI Testing** | Dashboard components and page-level testing |
+
+### Test Results
+
+Add your latest **actual** test results here after running the test suite.
+
+```text
+Unit Tests:        XX passed
+Integration Tests: XX passed
+Static Analysis:   XX
+Performance:       XX
+GUI Tests:         XX
+```
+
+> Replace the `XX` values with results from the actual test suite. Do not use estimated values.
+
+---
+
+## 📊 Performance & Benchmarking
+
+PRISM AI includes performance testing for large pull requests and load/spike scenarios.
+
+### Benchmark
+
+Add measured results here after running the benchmark suite:
+
+| Metric | Result |
+|---|---:|
+| Average review latency | XX sec |
+| RAG retrieval latency | XX ms |
+| Large PR processing time | XX sec |
+| Average diff size tested | XX lines |
+| Concurrent requests tested | XX |
+
+> Benchmark values should represent actual measurements from the current implementation.
 
 ---
 
 ## 📊 System Capabilities
 
 ### AI Review Engine
+
 - Cloud-hosted LLM inference via Groq
 - Structured, context-aware feedback generation
-- Multi-source input integration (diff, static analysis, RAG context)
+- Multi-source input integration
+- Pull request diff analysis
+- Static analysis findings
+- Repository context through RAG
 
 ### Semgrep Static Analysis
+
 - Vulnerability detection
 - Code quality issue identification
 - Security pattern matching
+- Static findings integrated into the review-generation process
 
 ### RAG System
+
 - Repository-level code indexing
 - Document and configuration file embedding
-- Query-based context retrieval via Pinecone
+- Query-based context retrieval through Pinecone
+- Repository-specific context for review generation
 
 ### Online Learning
+
 - SGDRegressor-based prompt optimization
-- Multi-feature learning (PR stats, static analysis, evaluation scores)
-- Continuous performance improvement
+- Multi-feature learning
+- PR statistics and evaluation signals
+- Prompt selection based on available review-quality signals
 
 ### Analytics Dashboard
+
 - Evaluation summaries and trends
-- Shows the latest AI review to the PR
+- Latest AI-generated review
+- Review analytics visualization
+
+---
+
+## 🔗 API & Integrations
+
+PRISM AI integrates multiple external systems through APIs.
+
+### GitHub
+
+Used for:
+
+- Pull request metadata
+- Pull request diffs
+- Repository information
+- Posting generated review feedback
+
+### Pinecone
+
+Used for:
+
+- Vector storage
+- Repository context retrieval
+- Semantic search
+
+### Groq
+
+Used for:
+
+- LLM inference
+- Structured review generation
+
+### Semgrep
+
+Used for:
+
+- Static code analysis
+- Security and maintainability checks
 
 ---
 
@@ -230,36 +452,94 @@ timeline
 ```
 
 ### Sprint 1: Cloud LLM Integration
+
 Initial PR fetch → LLM → Review comment pipeline
 
 ### Sprint 2: Static Analysis Integration
+
 Added Semgrep scanning and enriched prompts
 
 ### Sprint 3: RAG Integration
+
 Implemented Pinecone indexing and context-aware reviews
 
 ### Sprint 4: Online Learning Model
+
 Built a prompt selection and evaluation system
 
 ### Final Sprint: Dashboard & Testing
-Full analytics dashboard and comprehensive test suite
+
+Built the analytics dashboard and comprehensive test suite
+
+---
+
+## 📁 Project Structure
+
+> Keep this section synchronized with the actual repository structure.
+
+```text
+PRISM-AI/
+│
+├── dashboard/
+├── tests/
+├── main.py
+├── requirement.txt
+├── .env.example
+└── README.md
+```
+
+> If your repository uses different filenames or folders, update this section to match the actual structure.
+
+---
+
+## 🔐 Security
+
+- API credentials are configured through environment variables.
+- Sensitive keys should never be committed to the repository.
+- GitHub tokens should be stored securely.
+- `.env` files should remain excluded from version control.
 
 ---
 
 ## 🔮 Future Roadmap
 
-<img align="right" width="220" src="https://user-images.githubusercontent.com/74038190/212257467-871d32b7-e401-42e8-a166-fcfd7baa4c6b.gif">
-
 ### Planned Enhancements
 
-- **Local/Offline Processing** — Migration to local LLMs (Ollama) for private reviews
-- **Performance Optimization** — Reduced RAG latency and cached embeddings
-- **Advanced Features**
+- **Local/Offline Processing** — Migration to local LLMs such as Ollama for private reviews
+- **Advanced PR Automation**
   - Automatic PR labeling
   - Repository-level audit reports
+  - Automated review summaries
+- **Scalable Processing**
   - Background workers for large-scale scanning
+  - Further optimization of RAG retrieval and processing
+- **Advanced Analytics**
+  - Historical repository-level trends
+  - Developer/team-level review insights
 
-<br clear="right"/>
+---
+
+## 💡 Key Engineering Highlights
+
+PRISM AI demonstrates the integration of:
+
+```text
+GitHub APIs
+     +
+Static Code Analysis
+     +
+Vector Search / RAG
+     +
+LLM Inference
+     +
+Online Learning
+     +
+Automated Evaluation
+     +
+Analytics
+```
+
+The system combines deterministic software-analysis techniques with AI-based reasoning to create an automated pull-request review workflow.
 
 ---
 
@@ -267,6 +547,7 @@ Full analytics dashboard and comprehensive test suite
 
 **Built with ❤️ using FastAPI, Next.js, Pinecone, Semgrep, Groq, and Retrieval-Augmented Generation (RAG)**
 
+<br/>
 
 ![Footer Wave](https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=120&section=footer)
 
