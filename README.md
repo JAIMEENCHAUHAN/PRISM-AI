@@ -40,8 +40,6 @@ PRISM AI is an AI-powered GitHub Pull Request Review platform that combines Retr
 - 📈 **Online Learning** — Optimizes prompts based on review quality
 - 📊 **Analytics Dashboard** — Real-time visualization of review metrics
 
-> 💡 **Note:** Deploy your own analytics dashboard and link it here once live.
-
 <br clear="right"/>
 
 ---
